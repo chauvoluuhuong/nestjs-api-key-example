@@ -205,16 +205,50 @@ Authorization: Bearer ak_your_api_key_here
 
 Requires: `read` AND `analytics` scopes
 
-## Available Scopes
+## Scope System
 
-The system supports flexible scopes. Common scopes include:
+The system now uses a **structured scope system** that combines resources and permissions for fine-grained access control.
 
-- `read`: Read access to resources
-- `write`: Write access to resources
-- `admin`: Administrative access
-- `analytics`: Access to analytics data
-- `delete`: Permission to delete resources
-- Custom scopes can be defined as needed
+### Structure
+
+Each scope consists of:
+
+- **Resource**: The entity/domain (e.g., 'users', 'posts', 'analytics', '\*')
+- **Permissions**: Array of operations (READ, WRITE, UPDATE, DELETE)
+
+### Example Structured Scopes
+
+```json
+{
+  "scopes": [
+    {
+      "resource": "users",
+      "permissions": ["READ", "WRITE", "UPDATE"]
+    },
+    {
+      "resource": "analytics",
+      "permissions": ["READ"]
+    }
+  ]
+}
+```
+
+### Permission Types
+
+- `READ`: View/read access to resources
+- `WRITE`: Create new resources
+- `UPDATE`: Modify existing resources
+- `DELETE`: Remove resources
+
+### Legacy Support
+
+Simple string scopes are still supported for backward compatibility:
+
+- `read`, `write`, `update`, `delete`: Global permissions
+- `admin`: All permissions on all resources
+- `analytics`: Read access to analytics
+
+See [SCOPE_SYSTEM.md](SCOPE_SYSTEM.md) for detailed documentation.
 
 ## Authentication Methods
 

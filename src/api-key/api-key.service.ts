@@ -36,7 +36,9 @@ export class ApiKeyService {
     const apiKey = new this.apiKeyModel({
       ...createApiKeyDto,
       key: hashedKey,
-      scopes: createApiKeyDto.scopes || ["read"],
+      scopes: createApiKeyDto.scopes || [
+        { resource: "*", permissions: ["READ"] },
+      ],
     });
 
     const savedApiKey = await apiKey.save();
@@ -112,7 +114,10 @@ export class ApiKeyService {
     }
   }
 
-  async updateScopes(id: string, scopes: string[]): Promise<ApiKey> {
+  async updateScopes(
+    id: string,
+    scopes: { resource: string; permissions: string[] }[]
+  ): Promise<ApiKey> {
     const apiKey = await this.apiKeyModel
       .findByIdAndUpdate(id, { scopes }, { new: true })
       .select("-key")
@@ -126,11 +131,13 @@ export class ApiKeyService {
   }
 
   async deactivate(id: string): Promise<ApiKey> {
-    return this.update(id, { isActive: false });
+    const updateData: any = { isActive: false };
+    return this.update(id, updateData);
   }
 
   async activate(id: string): Promise<ApiKey> {
-    return this.update(id, { isActive: true });
+    const updateData: any = { isActive: true };
+    return this.update(id, updateData);
   }
 
   async regenerate(id: string): Promise<{ apiKey: ApiKey; rawKey: string }> {
@@ -170,14 +177,28 @@ export class ApiKeyService {
 
   async validateApiKeyScopes(
     apiKey: ApiKey,
-    requiredScopes: string[]
+    requiredScopes: { resource: string; permissions: string[] }[]
   ): Promise<boolean> {
     if (!requiredScopes || requiredScopes.length === 0) {
       return true;
     }
 
-    // Check if the API key has all required scopes
-    return requiredScopes.every((scope) => apiKey.scopes.includes(scope));
+    // Check if the API key has all required resource permissions
+    return requiredScopes.every(({ resource, permissions }) => {
+      // Find the scope for this resource or wildcard
+      const resourceScope = apiKey.scopes.find(
+        (scope) => scope.resource === resource || scope.resource === "*"
+      );
+
+      if (!resourceScope) {
+        return false;
+      }
+
+      // Check if all required permissions are present
+      return permissions.every((permission) =>
+        resourceScope.permissions.includes(permission)
+      );
+    });
   }
 
   async getUsageStats(id: string): Promise<any> {

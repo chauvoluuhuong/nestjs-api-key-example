@@ -4,7 +4,10 @@ export declare class ApiKey {
     key: string;
     name: string;
     description?: string;
-    scopes: string[];
+    scopes: {
+        resource: string;
+        permissions: string[];
+    }[];
     isActive: boolean;
     expiresAt?: Date;
     lastUsedAt?: Date;
