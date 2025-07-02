@@ -1,0 +1,1 @@
+{"version":3,"file":"require-scopes.decorator.js","sourceRoot":"","sources":["../../../src/auth/decorators/require-scopes.decorator.ts"],"names":[],"mappings":";;;AAAA,2CAA6C;AAEhC,QAAA,kBAAkB,GAAG,eAAe,CAAC;AAC3C,MAAM,aAAa,GAAG,CAAC,GAAG,MAAgB,EAAE,EAAE,CAAC,IAAA,oBAAW,EAAC,0BAAkB,EAAE,MAAM,CAAC,CAAC;AAAjF,QAAA,aAAa,iBAAoE"}
