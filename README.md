@@ -1,39 +1,36 @@
 # NestJS API Key Management System
 
-A comprehensive NestJS application with API key authentication, MongoDB integration, and scope-based access control.
+A comprehensive NestJS application demonstrating API key authentication, MongoDB integration, and scope-based access control.
 
-## Features
+## 🎥 Demo Video
 
-- 🔐 **API Key Authentication**: Secure API key generation and validation
-- 🎯 **Scope Management**: Fine-grained access control with customizable scopes
-- 🗄️ **MongoDB Integration**: Persistent storage with Mongoose
-- 📊 **Usage Tracking**: Monitor API key usage and statistics
-- ⚡ **Rate Limiting Support**: Built-in rate limiting capabilities
-- 🔄 **Key Management**: Full CRUD operations for API keys
-- 📝 **Comprehensive Logging**: Track usage patterns and access attempts
+Watch the system in action:
 
-## Prerequisites
+[![API Key Demo](https://img.shields.io/badge/Watch-Demo%20Video-blue?style=for-the-badge)](api-key-demo.mov)
+
+_Click the badge above or download `api-key-demo.mov` to see the complete demonstration of the API key management system._
+
+## 🚀 Quick Start
+
+### Prerequisites
 
 - Node.js (v16 or higher)
 - Docker & Docker Compose (recommended) OR MongoDB (v4.4 or higher)
 - npm or yarn
+- [Postman](https://www.postman.com/) (for testing)
 
-## Installation
+### Installation
 
-1. **Clone the repository**
+1. **Clone and setup**
 
    ```bash
    git clone <repository-url>
-   cd nestjs-api-key-app
-   ```
-
-2. **Install dependencies**
-
-   ```bash
+   cd nestjs-api-key-example
    npm install
    ```
 
-3. **Set up environment variables**
+2. **Environment setup**
+
    Create a `.env` file in the root directory:
 
    ```env
@@ -44,317 +41,128 @@ A comprehensive NestJS application with API key authentication, MongoDB integrat
    API_KEY_PREFIX=ak_
    ```
 
-4. **Start MongoDB**
+3. **Start services**
 
    ```bash
-   # Using Docker (recommended)
+   # Start MongoDB
    docker-compose up -d
 
-   # OR start MongoDB locally if installed
-   # macOS: brew services start mongodb/brew/mongodb-community
-   # Linux: sudo systemctl start mongod
-   # Windows: net start MongoDB
-   ```
-
-5. **Run the application**
-
-   ```bash
-   # Development mode
+   # Start the application
    npm run start:dev
-
-   # Production mode
-   npm run build
-   npm run start:prod
    ```
 
-## API Documentation
+## 🧪 Testing with Postman
 
-### API Key Management Endpoints
+The easiest way to test the API is using the provided Postman collection:
 
-#### Create API Key
+1. **Import the collection**
 
-```http
-POST /api-keys
-Content-Type: application/json
+   - Open Postman
+   - Click "Import"
+   - Select the `postman-collection.json` file from this repository
+   - The collection will be imported with all endpoints pre-configured
 
-{
-  "name": "My API Key",
-  "description": "API key for mobile app",
-  "scopes": ["read", "write"],
-  "expiresAt": "2024-12-31T23:59:59.000Z",
-  "metadata": {
-    "app": "mobile",
-    "version": "1.0"
-  }
-}
+2. **Set up environment variables**
+
+   - Create a new environment in Postman
+   - Add variable: `baseUrl` = `http://localhost:3000`
+   - The collection uses this variable for all requests
+
+3. **Start testing**
+   - Use the "Create API Key" request to generate your first API key
+   - Copy the returned API key
+   - Use it in subsequent requests to test protected endpoints
+
+## 🔐 Authentication & Authorization Flow
+
+```mermaid
+flowchart TD
+    A[Client Request] --> B{Has API Key?}
+    B -->|No| C[401 Unauthorized]
+    B -->|Yes| D[Extract API Key]
+    D --> E{Valid API Key?}
+    E -->|No| F[401 Invalid Key]
+    E -->|Yes| G{Key Active?}
+    G -->|No| H[401 Inactive Key]
+    G -->|Yes| I{Key Expired?}
+    I -->|Yes| J[401 Expired Key]
+    I -->|No| K[Load Key Scopes]
+    K --> L{Required Scopes Present?}
+    L -->|No| M[403 Insufficient Scopes]
+    L -->|Yes| N[Access Granted]
+    N --> O[Execute Request]
+    O --> P[Update Usage Stats]
+    P --> Q[Return Response]
+
+    style A fill:#e1f5fe
+    style N fill:#c8e6c9
+    style C fill:#ffcdd2
+    style F fill:#ffcdd2
+    style H fill:#ffcdd2
+    style J fill:#ffcdd2
+    style M fill:#ffcdd2
 ```
 
-**Response:**
+### Flow Explanation
 
-```json
-{
-  "message": "API key created successfully",
-  "apiKey": {
-    "_id": "64f8b2c1d4e5f6789a0b1c2d",
-    "name": "My API Key",
-    "description": "API key for mobile app",
-    "scopes": ["read", "write"],
-    "isActive": true,
-    "usageCount": 0,
-    "createdAt": "2023-09-06T10:30:00.000Z",
-    "updatedAt": "2023-09-06T10:30:00.000Z"
-  },
-  "key": "ak_1234567890abcdef1234567890abcdef",
-  "warning": "Store this key securely. It will not be shown again."
-}
-```
+1. **Request Arrives**: Client sends request with API key in header
+2. **Key Validation**: System checks if API key exists and is valid
+3. **Status Check**: Verifies key is active and not expired
+4. **Scope Validation**: Compares required scopes with key's assigned scopes
+5. **Access Control**: Grants or denies access based on scope match
+6. **Usage Tracking**: Records successful API usage for analytics
 
-#### Get All API Keys
+## 🎯 Key Features
 
-```http
-GET /api-keys
-```
+- 🔐 **Secure API Key Generation**: Cryptographically secure key generation
+- 🎯 **Scope-Based Access Control**: Fine-grained permissions system
+- 🗄️ **MongoDB Integration**: Persistent storage with Mongoose
+- 📊 **Usage Analytics**: Track API key usage patterns
+- ⚡ **Rate Limiting**: Built-in protection against abuse
+- 🔄 **Full CRUD Operations**: Complete API key lifecycle management
+- 📝 **Comprehensive Logging**: Detailed audit trails
 
-#### Get API Key by ID
+## 📚 Documentation
 
-```http
-GET /api-keys/:id
-```
+For detailed information about specific features:
 
-#### Update API Key
+- [Scope System Documentation](SCOPE_SYSTEM.md) - Learn about the structured scope system
+- [Quick Start Guide](QUICK_START.md) - Step-by-step setup instructions
+- [Docker Setup](DOCKER.md) - Containerized deployment options
 
-```http
-PUT /api-keys/:id
-Content-Type: application/json
+## 🛠️ Development
 
-{
-  "name": "Updated API Key Name",
-  "description": "Updated description"
-}
-```
-
-#### Update API Key Scopes
-
-```http
-PATCH /api-keys/:id/scopes
-Content-Type: application/json
-
-{
-  "scopes": ["read", "write", "admin"]
-}
-```
-
-#### Deactivate API Key
-
-```http
-PATCH /api-keys/:id/deactivate
-```
-
-#### Activate API Key
-
-```http
-PATCH /api-keys/:id/activate
-```
-
-#### Regenerate API Key
-
-```http
-POST /api-keys/:id/regenerate
-```
-
-#### Get Usage Statistics
-
-```http
-GET /api-keys/:id/usage
-```
-
-#### Delete API Key
-
-```http
-DELETE /api-keys/:id
-```
-
-### Protected Endpoints
-
-#### Basic Protected Route
-
-```http
-GET /protected
-Authorization: Bearer ak_your_api_key_here
-# OR
-X-API-Key: ak_your_api_key_here
-```
-
-Requires: `read` scope
-
-#### Admin Route
-
-```http
-GET /admin
-Authorization: Bearer ak_your_api_key_here
-```
-
-Requires: `write` AND `admin` scopes
-
-#### Analytics Route
-
-```http
-GET /analytics
-Authorization: Bearer ak_your_api_key_here
-```
-
-Requires: `read` AND `analytics` scopes
-
-## Scope System
-
-The system now uses a **structured scope system** that combines resources and permissions for fine-grained access control.
-
-### Structure
-
-Each scope consists of:
-
-- **Resource**: The entity/domain (e.g., 'users', 'posts', 'analytics', '\*')
-- **Permissions**: Array of operations (READ, WRITE, UPDATE, DELETE)
-
-### Example Structured Scopes
-
-```json
-{
-  "scopes": [
-    {
-      "resource": "users",
-      "permissions": ["READ", "WRITE", "UPDATE"]
-    },
-    {
-      "resource": "analytics",
-      "permissions": ["READ"]
-    }
-  ]
-}
-```
-
-### Permission Types
-
-- `READ`: View/read access to resources
-- `WRITE`: Create new resources
-- `UPDATE`: Modify existing resources
-- `DELETE`: Remove resources
-
-### Legacy Support
-
-Simple string scopes are still supported for backward compatibility:
-
-- `read`, `write`, `update`, `delete`: Global permissions
-- `admin`: All permissions on all resources
-- `analytics`: Read access to analytics
-
-See [SCOPE_SYSTEM.md](SCOPE_SYSTEM.md) for detailed documentation.
-
-## Authentication Methods
-
-The API supports two authentication methods:
-
-1. **Authorization Header**
-
-   ```http
-   Authorization: Bearer ak_your_api_key_here
-   ```
-
-2. **Custom Header**
-   ```http
-   X-API-Key: ak_your_api_key_here
-   ```
-
-## Error Responses
-
-### 401 Unauthorized
-
-```json
-{
-  "statusCode": 401,
-  "message": "API key is required",
-  "error": "Unauthorized"
-}
-```
-
-### 403 Forbidden
-
-```json
-{
-  "statusCode": 403,
-  "message": "Insufficient scopes. Required: write, admin. Available: read",
-  "error": "Forbidden"
-}
-```
-
-## Usage Examples
-
-### Creating an API Key with Scopes
+### Available Scripts
 
 ```bash
-curl -X POST http://localhost:3000/api-keys \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Mobile App Key",
-    "description": "API key for the mobile application",
-    "scopes": ["read", "write"],
-    "expiresAt": "2024-12-31T23:59:59.000Z"
-  }'
-```
+# Development
+npm run start:dev
 
-### Using the API Key
+# Production
+npm run build
+npm run start:prod
 
-```bash
-curl -X GET http://localhost:3000/protected \
-  -H "Authorization: Bearer ak_1234567890abcdef1234567890abcdef"
-```
-
-### Updating Scopes
-
-```bash
-curl -X PATCH http://localhost:3000/api-keys/64f8b2c1d4e5f6789a0b1c2d/scopes \
-  -H "Content-Type: application/json" \
-  -d '{
-    "scopes": ["read", "write", "admin"]
-  }'
-```
-
-## Development
-
-### Running Tests
-
-```bash
-# Unit tests
+# Testing
 npm run test
-
-# E2E tests
 npm run test:e2e
-
-# Test coverage
 npm run test:cov
-```
 
-### Linting and Formatting
-
-```bash
-# Lint code
+# Code Quality
 npm run lint
-
-# Format code
 npm run format
 ```
 
-## Security Best Practices
+## 🔒 Security Best Practices
 
-1. **Store API keys securely**: Never expose API keys in client-side code
-2. **Use HTTPS**: Always use HTTPS in production
-3. **Implement rate limiting**: Use the built-in rate limiting features
-4. **Monitor usage**: Regularly check API key usage statistics
-5. **Rotate keys**: Periodically regenerate API keys
-6. **Scope limitation**: Grant minimum required scopes
-7. **Set expiration**: Use expiration dates for temporary access
+- Store API keys securely (never in client-side code)
+- Use HTTPS in production environments
+- Implement rate limiting for API protection
+- Regularly monitor API key usage
+- Rotate keys periodically
+- Grant minimum required scopes
+- Set appropriate expiration dates
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -362,6 +170,6 @@ npm run format
 4. Add tests for new functionality
 5. Submit a pull request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License.
