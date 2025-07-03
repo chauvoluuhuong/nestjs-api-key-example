@@ -77,6 +77,7 @@ __decorate([
     (0, common_1.Get)("admin"),
     (0, common_1.UseGuards)(api_key_guard_1.ApiKeyGuard),
     (0, require_scopes_decorator_1.RequireResource)("admin", permission_enum_1.Permission.WRITE, permission_enum_1.Permission.DELETE),
+    (0, require_scopes_decorator_1.RequireResource)("analytics", permission_enum_1.Permission.READ),
     __param(0, (0, current_api_key_decorator_1.CurrentApiKey)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [api_key_schema_1.ApiKey]),
