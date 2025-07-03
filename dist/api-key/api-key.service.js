@@ -37,7 +37,9 @@ let ApiKeyService = class ApiKeyService {
         const apiKey = new this.apiKeyModel({
             ...createApiKeyDto,
             key: hashedKey,
-            scopes: createApiKeyDto.scopes || ["read"],
+            scopes: createApiKeyDto.scopes || [
+                { resource: "*", permissions: ["READ"] },
+            ],
         });
         const savedApiKey = await apiKey.save();
         const result = savedApiKey.toObject();
@@ -104,10 +106,12 @@ let ApiKeyService = class ApiKeyService {
         return apiKey;
     }
     async deactivate(id) {
-        return this.update(id, { isActive: false });
+        const updateData = { isActive: false };
+        return this.update(id, updateData);
     }
     async activate(id) {
-        return this.update(id, { isActive: true });
+        const updateData = { isActive: true };
+        return this.update(id, updateData);
     }
     async regenerate(id) {
         const existingApiKey = await this.apiKeyModel.findById(id).exec();
@@ -138,7 +142,13 @@ let ApiKeyService = class ApiKeyService {
         if (!requiredScopes || requiredScopes.length === 0) {
             return true;
         }
-        return requiredScopes.every((scope) => apiKey.scopes.includes(scope));
+        return requiredScopes.every(({ resource, permissions }) => {
+            const resourceScope = apiKey.scopes.find((scope) => scope.resource === resource || scope.resource === "*");
+            if (!resourceScope) {
+                return false;
+            }
+            return permissions.every((permission) => resourceScope.permissions.includes(permission));
+        });
     }
     async getUsageStats(id) {
         const apiKey = await this.apiKeyModel.findById(id).select("-key").exec();

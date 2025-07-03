@@ -1,6 +1,6 @@
-import { ApiKeyService } from './api-key.service';
-import { CreateApiKeyDto } from './dto/create-api-key.dto';
-import { UpdateApiKeyDto } from './dto/update-api-key.dto';
+import { ApiKeyService } from "./api-key.service";
+import { CreateApiKeyDto } from "./dto/create-api-key.dto";
+import { UpdateApiKeyDto } from "./dto/update-api-key.dto";
 export declare class ApiKeyController {
     private readonly apiKeyService;
     constructor(apiKeyService: ApiKeyService);
@@ -27,7 +27,10 @@ export declare class ApiKeyController {
         message: string;
     }>;
     updateScopes(id: string, body: {
-        scopes: string[];
+        scopes: {
+            resource: string;
+            permissions: string[];
+        }[];
     }): Promise<{
         message: string;
         data: import("./schemas/api-key.schema").ApiKey;

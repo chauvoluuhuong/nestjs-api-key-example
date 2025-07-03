@@ -6,8 +6,10 @@ import {
   IsDate,
   IsNumber,
   IsObject,
+  ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { ApiKeyScopeDto } from "../../auth/dto/scope.dto";
 
 export class CreateApiKeyDto {
   @IsString()
@@ -19,8 +21,9 @@ export class CreateApiKeyDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  scopes?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ApiKeyScopeDto)
+  scopes?: ApiKeyScopeDto[];
 
   @IsOptional()
   @IsBoolean()

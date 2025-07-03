@@ -27,7 +27,15 @@ __decorate([
     __metadata("design:type", String)
 ], ApiKey.prototype, "description", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [String], default: [] }),
+    (0, mongoose_1.Prop)({
+        type: [
+            {
+                resource: { type: String, required: true },
+                permissions: { type: [String], required: true },
+            },
+        ],
+        default: [],
+    }),
     __metadata("design:type", Array)
 ], ApiKey.prototype, "scopes", void 0);
 __decorate([

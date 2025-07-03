@@ -14,7 +14,10 @@ export declare class ApiKeyService {
     findByKey(key: string): Promise<ApiKey | null>;
     update(id: string, updateApiKeyDto: UpdateApiKeyDto): Promise<ApiKey>;
     remove(id: string): Promise<void>;
-    updateScopes(id: string, scopes: string[]): Promise<ApiKey>;
+    updateScopes(id: string, scopes: {
+        resource: string;
+        permissions: string[];
+    }[]): Promise<ApiKey>;
     deactivate(id: string): Promise<ApiKey>;
     activate(id: string): Promise<ApiKey>;
     regenerate(id: string): Promise<{
@@ -22,6 +25,9 @@ export declare class ApiKeyService {
         rawKey: string;
     }>;
     private generateApiKey;
-    validateApiKeyScopes(apiKey: ApiKey, requiredScopes: string[]): Promise<boolean>;
+    validateApiKeyScopes(apiKey: ApiKey, requiredScopes: {
+        resource: string;
+        permissions: string[];
+    }[]): Promise<boolean>;
     getUsageStats(id: string): Promise<any>;
 }
