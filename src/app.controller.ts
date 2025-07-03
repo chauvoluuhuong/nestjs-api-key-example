@@ -1,9 +1,14 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AppService } from './app.service';
-import { ApiKeyGuard } from './auth/guards/api-key.guard';
-import { RequireScopes } from './auth/decorators/require-scopes.decorator';
-import { CurrentApiKey } from './auth/decorators/current-api-key.decorator';
-import { ApiKey } from './api-key/schemas/api-key.schema';
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { AppService } from "./app.service";
+import { ApiKeyGuard } from "./auth/guards/api-key.guard";
+import {
+  RequireRead,
+  RequireResource,
+  RequireLegacyScopes,
+} from "./auth/decorators/require-scopes.decorator";
+import { Permission } from "./auth/enums/permission.enum";
+import { CurrentApiKey } from "./auth/decorators/current-api-key.decorator";
+import { ApiKey } from "./api-key/schemas/api-key.schema";
 
 @Controller()
 export class AppController {
@@ -14,39 +19,39 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // Protected route that requires API key with 'read' scope
-  @Get('protected')
+  // Protected route that requires API key with READ permission on any resource
+  @Get("protected")
   @UseGuards(ApiKeyGuard)
-  @RequireScopes('read')
+  @RequireRead("*")
   getProtectedData(@CurrentApiKey() apiKey: ApiKey): any {
     return {
-      message: 'This is protected data',
+      message: "This is protected data",
       accessedBy: apiKey.name,
       scopes: apiKey.scopes,
       timestamp: new Date().toISOString(),
     };
   }
 
-  // Protected route that requires API key with 'write' scope
-  @Get('admin')
+  // Protected route that requires API key with WRITE and DELETE permissions on admin resource
+  @Get("admin")
   @UseGuards(ApiKeyGuard)
-  @RequireScopes('write', 'admin')
+  @RequireResource("admin", Permission.WRITE, Permission.DELETE)
   getAdminData(@CurrentApiKey() apiKey: ApiKey): any {
     return {
-      message: 'This is admin data',
+      message: "This is admin data",
       accessedBy: apiKey.name,
       scopes: apiKey.scopes,
       timestamp: new Date().toISOString(),
     };
   }
 
-  // Protected route that requires API key with multiple scopes
-  @Get('analytics')
+  // Protected route that requires API key with READ permission on analytics resource
+  @Get("analytics")
   @UseGuards(ApiKeyGuard)
-  @RequireScopes('read', 'analytics')
+  @RequireRead("analytics")
   getAnalytics(@CurrentApiKey() apiKey: ApiKey): any {
     return {
-      message: 'Analytics data',
+      message: "Analytics data",
       data: {
         users: 1500,
         revenue: 50000,
@@ -57,4 +62,4 @@ export class AppController {
       timestamp: new Date().toISOString(),
     };
   }
-} 
+}

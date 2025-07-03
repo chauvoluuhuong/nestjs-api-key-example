@@ -14,8 +14,16 @@ export class ApiKey {
   @Prop()
   description?: string;
 
-  @Prop({ type: [String], default: [] })
-  scopes!: string[];
+  @Prop({
+    type: [
+      {
+        resource: { type: String, required: true },
+        permissions: { type: [String], required: true },
+      },
+    ],
+    default: [],
+  })
+  scopes!: { resource: string; permissions: string[] }[];
 
   @Prop({ default: true })
   isActive!: boolean;

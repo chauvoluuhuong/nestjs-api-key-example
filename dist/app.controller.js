@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const api_key_guard_1 = require("./auth/guards/api-key.guard");
 const require_scopes_decorator_1 = require("./auth/decorators/require-scopes.decorator");
+const permission_enum_1 = require("./auth/enums/permission.enum");
 const current_api_key_decorator_1 = require("./auth/decorators/current-api-key.decorator");
 const api_key_schema_1 = require("./api-key/schemas/api-key.schema");
 let AppController = class AppController {
@@ -28,7 +29,7 @@ let AppController = class AppController {
     }
     getProtectedData(apiKey) {
         return {
-            message: 'This is protected data',
+            message: "This is protected data",
             accessedBy: apiKey.name,
             scopes: apiKey.scopes,
             timestamp: new Date().toISOString(),
@@ -36,7 +37,7 @@ let AppController = class AppController {
     }
     getAdminData(apiKey) {
         return {
-            message: 'This is admin data',
+            message: "This is admin data",
             accessedBy: apiKey.name,
             scopes: apiKey.scopes,
             timestamp: new Date().toISOString(),
@@ -44,7 +45,7 @@ let AppController = class AppController {
     }
     getAnalytics(apiKey) {
         return {
-            message: 'Analytics data',
+            message: "Analytics data",
             data: {
                 users: 1500,
                 revenue: 50000,
@@ -64,27 +65,28 @@ __decorate([
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
 __decorate([
-    (0, common_1.Get)('protected'),
+    (0, common_1.Get)("protected"),
     (0, common_1.UseGuards)(api_key_guard_1.ApiKeyGuard),
-    (0, require_scopes_decorator_1.RequireScopes)('read'),
+    (0, require_scopes_decorator_1.RequireRead)("*"),
     __param(0, (0, current_api_key_decorator_1.CurrentApiKey)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [api_key_schema_1.ApiKey]),
     __metadata("design:returntype", Object)
 ], AppController.prototype, "getProtectedData", null);
 __decorate([
-    (0, common_1.Get)('admin'),
+    (0, common_1.Get)("admin"),
     (0, common_1.UseGuards)(api_key_guard_1.ApiKeyGuard),
-    (0, require_scopes_decorator_1.RequireScopes)('write', 'admin'),
+    (0, require_scopes_decorator_1.RequireResource)("admin", permission_enum_1.Permission.WRITE, permission_enum_1.Permission.DELETE),
+    (0, require_scopes_decorator_1.RequireResource)("analytics", permission_enum_1.Permission.READ),
     __param(0, (0, current_api_key_decorator_1.CurrentApiKey)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [api_key_schema_1.ApiKey]),
     __metadata("design:returntype", Object)
 ], AppController.prototype, "getAdminData", null);
 __decorate([
-    (0, common_1.Get)('analytics'),
+    (0, common_1.Get)("analytics"),
     (0, common_1.UseGuards)(api_key_guard_1.ApiKeyGuard),
-    (0, require_scopes_decorator_1.RequireScopes)('read', 'analytics'),
+    (0, require_scopes_decorator_1.RequireRead)("analytics"),
     __param(0, (0, current_api_key_decorator_1.CurrentApiKey)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [api_key_schema_1.ApiKey]),

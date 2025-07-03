@@ -1,0 +1,418 @@
+{
+  "info": {
+    "_postman_id": "fef44aab-3d3f-496d-b387-a6467f99a309",
+    "name": "NestJS API Key Server",
+    "description": "Collection for testing the NestJS API Key authentication server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "5354727",
+    "_collection_link": "https://lively-astronaut-383250.postman.co/workspace/My-Workspace~75f76e23-7817-45fb-81a1-6102b10e62f4/collection/5354727-fef44aab-3d3f-496d-b387-a6467f99a309?action=share&source=collection_link&creator=5354727"
+  },
+  "item": [
+    {
+      "name": "Public Endpoints",
+      "item": [
+        {
+          "name": "Get Hello",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "description": "Public endpoint that doesn't require authentication"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "API Key Management",
+      "item": [
+        {
+          "name": "Create API Key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = JSON.parse(responseBody)",
+                  "console.log('data: ', data)",
+                  "pm.environment.set(\"apiKey\", data.key)",
+                  "pm.environment.set(\"apiKeyId\", data.apiKey._id)"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test API Key3\",\n  \"description\": \"API key for testing purposes\",\n  \"scopes\": [\n    {\n      \"resource\": \"*\",\n      \"permissions\": [\"READ\"]\n    },\n    {\n      \"resource\": \"admin\",\n      \"permissions\": [\"READ\", \"WRITE\", \"DELETE\"]\n    },\n    {\n      \"resource\": \"analytics\",\n      \"permissions\": [\"READ\"]\n    }\n  ],\n  \"isActive\": true,\n  \"expiresAt\": \"2026-12-31T23:59:59.000Z\",\n  \"rateLimit\": 1000,\n  \"metadata\": {\n    \"createdBy\": \"test-user\",\n    \"environment\": \"development\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api-keys",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys"
+              ]
+            },
+            "description": "Create a new API key with specified scopes and permissions"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All API Keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys"
+              ]
+            },
+            "description": "Retrieve all API keys"
+          },
+          "response": []
+        },
+        {
+          "name": "Get API Key by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "API Key ID"
+                }
+              ]
+            },
+            "description": "Retrieve a specific API key by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update API Key",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated API Key Name\",\n  \"description\": \"Updated description\",\n  \"isActive\": true,\n  \"rateLimit\": 2000,\n  \"metadata\": {\n    \"updatedBy\": \"test-user\",\n    \"lastUpdated\": \"2024-01-01T00:00:00.000Z\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/{{apiKeyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "{{apiKeyId}}"
+              ]
+            },
+            "description": "Update an existing API key"
+          },
+          "response": []
+        },
+        {
+          "name": "Update API Key Scopes",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scopes\": [\n    {\n      \"resource\": \"admin\",\n      \"permissions\": [\"WRITE\", \"UPDATE\", \"DELETE\"]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/{{apiKeyId}}/scopes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "{{apiKeyId}}",
+                "scopes"
+              ]
+            },
+            "description": "Update the scopes and permissions of an API key"
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate API Key",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys/{{apiKeyId}}/deactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "{{apiKeyId}}",
+                "deactivate"
+              ]
+            },
+            "description": "Deactivate an API key"
+          },
+          "response": []
+        },
+        {
+          "name": "Activate API Key",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys//{{apiKeyId}}/activate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "",
+                "{{apiKeyId}}",
+                "activate"
+              ]
+            },
+            "description": "Activate a previously deactivated API key"
+          },
+          "response": []
+        },
+        {
+          "name": "Regenerate API Key",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys//{{apiKeyId}}/regenerate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "",
+                "{{apiKeyId}}",
+                "regenerate"
+              ]
+            },
+            "description": "Regenerate an API key (returns new key only once)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get API Key Usage Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys//{{apiKeyId}}/usage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "",
+                "{{apiKeyId}}",
+                "usage"
+              ]
+            },
+            "description": "Get usage statistics for an API key"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete API Key",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api-keys//{{apiKeyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api-keys",
+                "",
+                "{{apiKeyId}}"
+              ]
+            },
+            "description": "Delete an API key permanently"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Protected Endpoints",
+      "item": [
+        {
+          "name": "Get Protected Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "API Key for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/protected",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "protected"
+              ]
+            },
+            "description": "Protected endpoint requiring READ permission on any resource"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Admin Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "API Key for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin"
+              ]
+            },
+            "description": "Protected endpoint requiring WRITE and DELETE permissions on admin resource"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "API Key for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "analytics"
+              ]
+            },
+            "description": "Protected endpoint requiring READ permission on analytics resource"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-set Content-Type for requests with body",
+          "if (pm.request.body && pm.request.body.mode === 'raw') {",
+          "    pm.request.headers.add({",
+          "        key: 'Content-Type',",
+          "        value: 'application/json'",
+          "    });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test script to validate responses",
+          "pm.test('Status code is 200 or 201', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+          "});",
+          "",
+          "pm.test('Response has required fields', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('message');",
+          "});",
+          "",
+          "// For API key creation, store the key in collection variable",
+          "if (pm.request.url.path.includes('/api-keys') && pm.request.method === 'POST') {",
+          "    const response = pm.response.json();",
+          "    if (response.key) {",
+          "        pm.collectionVariables.set('apiKey', response.key);",
+          "        console.log('API Key stored in collection variable');",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -24,16 +24,16 @@ let ApiKeyController = class ApiKeyController {
     async create(createApiKeyDto) {
         const result = await this.apiKeyService.create(createApiKeyDto);
         return {
-            message: 'API key created successfully',
+            message: "API key created successfully",
             apiKey: result.apiKey,
             key: result.rawKey,
-            warning: 'Store this key securely. It will not be shown again.',
+            warning: "Store this key securely. It will not be shown again.",
         };
     }
     async findAll() {
         const apiKeys = await this.apiKeyService.findAll();
         return {
-            message: 'API keys retrieved successfully',
+            message: "API keys retrieved successfully",
             data: apiKeys,
             count: apiKeys.length,
         };
@@ -41,57 +41,57 @@ let ApiKeyController = class ApiKeyController {
     async findOne(id) {
         const apiKey = await this.apiKeyService.findOne(id);
         return {
-            message: 'API key retrieved successfully',
+            message: "API key retrieved successfully",
             data: apiKey,
         };
     }
     async update(id, updateApiKeyDto) {
         const apiKey = await this.apiKeyService.update(id, updateApiKeyDto);
         return {
-            message: 'API key updated successfully',
+            message: "API key updated successfully",
             data: apiKey,
         };
     }
     async remove(id) {
         await this.apiKeyService.remove(id);
         return {
-            message: 'API key deleted successfully',
+            message: "API key deleted successfully",
         };
     }
     async updateScopes(id, body) {
         const apiKey = await this.apiKeyService.updateScopes(id, body.scopes);
         return {
-            message: 'API key scopes updated successfully',
+            message: "API key scopes updated successfully",
             data: apiKey,
         };
     }
     async deactivate(id) {
         const apiKey = await this.apiKeyService.deactivate(id);
         return {
-            message: 'API key deactivated successfully',
+            message: "API key deactivated successfully",
             data: apiKey,
         };
     }
     async activate(id) {
         const apiKey = await this.apiKeyService.activate(id);
         return {
-            message: 'API key activated successfully',
+            message: "API key activated successfully",
             data: apiKey,
         };
     }
     async regenerate(id) {
         const result = await this.apiKeyService.regenerate(id);
         return {
-            message: 'API key regenerated successfully',
+            message: "API key regenerated successfully",
             apiKey: result.apiKey,
             key: result.rawKey,
-            warning: 'Store this key securely. It will not be shown again.',
+            warning: "Store this key securely. It will not be shown again.",
         };
     }
     async getUsageStats(id) {
         const stats = await this.apiKeyService.getUsageStats(id);
         return {
-            message: 'Usage statistics retrieved successfully',
+            message: "Usage statistics retrieved successfully",
             data: stats,
         };
     }
@@ -111,66 +111,66 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_api_key_dto_1.UpdateApiKeyDto]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Delete)(":id"),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "remove", null);
 __decorate([
-    (0, common_1.Patch)(':id/scopes'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Patch)(":id/scopes"),
+    __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "updateScopes", null);
 __decorate([
-    (0, common_1.Patch)(':id/deactivate'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Patch)(":id/deactivate"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "deactivate", null);
 __decorate([
-    (0, common_1.Patch)(':id/activate'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Patch)(":id/activate"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "activate", null);
 __decorate([
-    (0, common_1.Post)(':id/regenerate'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Post)(":id/regenerate"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "regenerate", null);
 __decorate([
-    (0, common_1.Get)(':id/usage'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(":id/usage"),
+    __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ApiKeyController.prototype, "getUsageStats", null);
 exports.ApiKeyController = ApiKeyController = __decorate([
-    (0, common_1.Controller)('api-keys'),
+    (0, common_1.Controller)("api-keys"),
     __metadata("design:paramtypes", [api_key_service_1.ApiKeyService])
 ], ApiKeyController);
 //# sourceMappingURL=api-key.controller.js.map

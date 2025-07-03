@@ -1,7 +1,8 @@
+import { ApiKeyScopeDto } from "../../auth/dto/scope.dto";
 export declare class CreateApiKeyDto {
     name: string;
     description?: string;
-    scopes?: string[];
+    scopes?: ApiKeyScopeDto[];
     isActive?: boolean;
     expiresAt?: Date;
     rateLimit?: number;
